@@ -1,6 +1,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.have_nerd_font = true
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 vim.opt.number = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
@@ -10,7 +12,6 @@ vim.schedule(function()
 	vim.opt.clipboard = "unnamedplus"
 end)
 
---vim.opt.rocks.enabled = false
 vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
@@ -590,6 +591,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
+		lazy = false,
 		version = "*",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -602,6 +604,7 @@ require("lazy").setup({
 		},
 		opts = {
 			filesystem = {
+				hijack_netrw_behavior = "open_current",
 				window = {
 					mappings = {
 						["\\"] = "close_window",
