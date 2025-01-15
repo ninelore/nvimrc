@@ -311,6 +311,18 @@ require("lazy").setup({
 			if vim.fn.executable("nixd") == 1 then
 				require("lspconfig").nixd.setup({})
 			end
+			if vim.fn.executable("nil") == 1 then
+				require("lspconfig").nil_ls.setup({
+					settings = {
+						["nil"] = {
+							testSetting = 42,
+							formatting = {
+								command = { "nixfmt" },
+							},
+						},
+					},
+				})
+			end
 		end,
 	},
 
