@@ -620,6 +620,7 @@ require("lazy").setup({
 				window = {
 					mappings = {
 						["\\"] = "close_window",
+						["<Space>"] = "noop",
 					},
 				},
 			},
