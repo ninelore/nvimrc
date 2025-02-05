@@ -218,9 +218,7 @@ require("lazy").setup({
 			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
 			{ "williamboman/mason-lspconfig.nvim" },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
-			-- Useful status updates for LSP.
 			{ "j-hui/fidget.nvim", opts = {} },
-			-- Allows extra capabilities provided by nvim-cmp
 			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
@@ -283,6 +281,8 @@ require("lazy").setup({
 			-- Language servers
 			local servers = {
 				-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
+				jsonls = {},
+				lemminx = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -294,6 +294,7 @@ require("lazy").setup({
 						},
 					},
 				},
+				yamlls = {},
 			}
 
 			-- Ensure the servers and tools above are installed
@@ -334,13 +335,20 @@ require("lazy").setup({
 					},
 				})
 			end
+			if vim.fn.executable("nu") == 1 then
+				require("lspconfig").nushell.setup({})
+			end
 		end,
 	},
 
-	{ -- Autoformat
-		"stevearc/conform.nvim",
-		event = { "BufWritePre" },
-		cmd = { "ConformInfo" },
+	{ -- Linting and formatting
+		"frostplexx/mason-bridge.nvim",
+		lazy = true,
+		dependencies = {
+			"williamboman/mason.nvim",
+			"stevearc/conform.nvim",
+			"mfussenegger/nvim-lint",
+		},
 		keys = {
 			{
 				"<leader>f",
@@ -351,27 +359,48 @@ require("lazy").setup({
 				desc = "[F]ormat buffer",
 			},
 		},
-		opts = {
-			notify_on_error = false,
-			format_on_save = function(bufnr)
-				local disable_filetypes = { c = true, cpp = true }
-				local lsp_format_opt
-				if disable_filetypes[vim.bo[bufnr].filetype] then
-					lsp_format_opt = "never"
-				else
-					lsp_format_opt = "fallback"
-				end
-				return {
-					timeout_ms = 500,
-					lsp_format = lsp_format_opt,
-				}
-			end,
-			formatters_by_ft = {
-				lua = { "stylua" },
-				nix = { "nixfmt" },
-				-- javascript = { "prettierd", "prettier", stop_after_first = true },
-			},
-		},
+		config = function()
+			require("mason").setup()
+			require("mason-bridge").setup({
+				overrides = {
+					linters = {},
+					formatters = {
+				    lua = { "stylua" },
+						nix = { "nixfmt" },
+					},
+				},
+			})
+
+			require("conform").setup({
+				formatters_by_ft = require("mason-bridge").get_formatters(),
+				format_on_error = false,
+				format_on_save = function(bufnr)
+					require("conform").formatters_by_ft = require("mason-bridge").get_formatters()
+					local disable_filetypes = { c = true, cpp = true }
+					local lsp_format_opt
+					if disable_filetypes[vim.bo[bufnr].filetype] then
+						lsp_format_opt = "never"
+					else
+						lsp_format_opt = "fallback"
+					end
+					return {
+						timeout_ms = 500,
+						lsp_format = lsp_format_opt,
+					}
+				end,
+			})
+
+			require("lint").linters_by_ft = require("mason-bridge").get_linters()
+			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+				callback = function()
+					local linters = require("mason-bridge").get_linters()
+					local names = linters[vim.bo.filetype] or {}
+					names = vim.list_extend({}, names)
+					vim.list_extend(names, linters["*"])
+					require("lint").try_lint(names)
+				end,
+			})
+		end,
 	},
 
 	{ -- Autocompletion
