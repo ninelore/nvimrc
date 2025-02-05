@@ -108,6 +108,15 @@ require("lazy").setup({
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
 			},
 		},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = true })
+				end,
+				desc = "Buffer Local Keymaps (which-key)",
+			},
+		},
 	},
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
@@ -171,17 +180,13 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
-			-- Slightly advanced example of overriding default behavior and theme
 			vim.keymap.set("n", "<leader>/", function()
-				-- You can pass additional configuration to Telescope to change the theme, layout, etc.
 				builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
 					winblend = 10,
 					previewer = false,
 				}))
 			end, { desc = "[/] Fuzzily search in current buffer" })
 
-			-- It's also possible to pass additional configuration options.
-			--  See `:help telescope.builtin.live_grep()` for information about particular keys
 			vim.keymap.set("n", "<leader>s/", function()
 				builtin.live_grep({
 					grep_open_files = true,
@@ -189,17 +194,13 @@ require("lazy").setup({
 				})
 			end, { desc = "[S]earch [/] in Open Files" })
 
-			-- Shortcut for searching your Neovim configuration files
 			vim.keymap.set("n", "<leader>sn", function()
 				builtin.find_files({ cwd = vim.fn.stdpath("config") })
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
 
-	-- LSP Plugins
 	{
-		-- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-		-- used for completion, annotations and signatures of Neovim apis
 		"folke/lazydev.nvim",
 		ft = "lua",
 		opts = {
@@ -211,11 +212,9 @@ require("lazy").setup({
 	},
 	{ "Bilal2453/luvit-meta", lazy = true },
 	{
-		-- Main LSP Configuration
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			-- Automatically install LSPs and related tools to stdpath for Neovim
-			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
+			{ "williamboman/mason.nvim", config = true },
 			{ "williamboman/mason-lspconfig.nvim" },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
 			{ "j-hui/fidget.nvim", opts = {} },
@@ -278,7 +277,6 @@ require("lazy").setup({
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-			-- Language servers
 			local servers = {
 				-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
 				jsonls = {},
@@ -297,7 +295,6 @@ require("lazy").setup({
 				yamlls = {},
 			}
 
-			-- Ensure the servers and tools above are installed
 			require("mason").setup({
 				-- Use system binaries first if available.
 				-- Fixes Stuff on NixOS
@@ -319,7 +316,7 @@ require("lazy").setup({
 				},
 			})
 
-			-- Handle nixd seperately if available
+			-- Handle seperately if available
 			if vim.fn.executable("nixd") == 1 then
 				require("lspconfig").nixd.setup({})
 			end
@@ -341,14 +338,14 @@ require("lazy").setup({
 		end,
 	},
 
-	{ -- Linting and formatting
-		"frostplexx/mason-bridge.nvim",
-		lazy = true,
+	{ -- Autoformat
+		"stevearc/conform.nvim",
 		dependencies = {
 			"williamboman/mason.nvim",
-			"stevearc/conform.nvim",
-			"mfussenegger/nvim-lint",
+			"zapling/mason-conform.nvim",
 		},
+		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
 		keys = {
 			{
 				"<leader>f",
@@ -361,21 +358,10 @@ require("lazy").setup({
 		},
 		config = function()
 			require("mason").setup()
-			require("mason-bridge").setup({
-				overrides = {
-					linters = {},
-					formatters = {
-				    lua = { "stylua" },
-						nix = { "nixfmt" },
-					},
-				},
-			})
 
 			require("conform").setup({
-				formatters_by_ft = require("mason-bridge").get_formatters(),
-				format_on_error = false,
+				notify_on_error = false,
 				format_on_save = function(bufnr)
-					require("conform").formatters_by_ft = require("mason-bridge").get_formatters()
 					local disable_filetypes = { c = true, cpp = true }
 					local lsp_format_opt
 					if disable_filetypes[vim.bo[bufnr].filetype] then
@@ -388,18 +374,13 @@ require("lazy").setup({
 						lsp_format = lsp_format_opt,
 					}
 				end,
+				formatters_by_ft = {
+					lua = { "stylua" },
+					nix = { "nixfmt" },
+				},
 			})
 
-			require("lint").linters_by_ft = require("mason-bridge").get_linters()
-			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-				callback = function()
-					local linters = require("mason-bridge").get_linters()
-					local names = linters[vim.bo.filetype] or {}
-					names = vim.list_extend({}, names)
-					vim.list_extend(names, linters["*"])
-					require("lint").try_lint(names)
-				end,
-			})
+			require("mason-conform").setup()
 		end,
 	},
 
