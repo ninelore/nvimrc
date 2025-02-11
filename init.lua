@@ -145,6 +145,13 @@ require("lazy").setup({
 						return vim.o.columns >= 120 and "telescope" or "vertical"
 					end,
 				},
+				sources = {
+					files = {
+						hidden = true,
+						ignored = true,
+						exclude = { ".git" },
+					},
+				},
 			},
 			notifier = {
 				enabled = true,
@@ -157,20 +164,19 @@ require("lazy").setup({
 			words = { enabled = true },
 		},
 		keys = {
-			-- Top Pickers & Explorer
 			{
 				"<leader><space>",
-				function()
-					Snacks.picker.smart()
-				end,
-				desc = "Smart Find Files",
-			},
-			{
-				"<leader>,",
 				function()
 					Snacks.picker.buffers()
 				end,
 				desc = "Buffers",
+			},
+			{
+				"<leader>ss",
+				function()
+					Snacks.picker.smart()
+				end,
+				desc = "Smart Find Files",
 			},
 			{
 				"<leader>sn",
@@ -186,7 +192,6 @@ require("lazy").setup({
 				end,
 				desc = "File Explorer",
 			},
-			-- find
 			{
 				"<leader>sb",
 				function()
@@ -229,7 +234,6 @@ require("lazy").setup({
 				end,
 				desc = "Recent",
 			},
-			-- git
 			{
 				"<leader>gb",
 				function()
@@ -279,7 +283,6 @@ require("lazy").setup({
 				end,
 				desc = "Git Log File",
 			},
-			-- Grep
 			{
 				"<leader>sb",
 				function()
@@ -309,7 +312,6 @@ require("lazy").setup({
 				desc = "Visual selection or word",
 				mode = { "n", "x" },
 			},
-			-- search
 			{
 				'<leader>s"',
 				function()
