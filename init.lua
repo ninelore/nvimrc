@@ -135,7 +135,9 @@ require("lazy").setup({
 					}, "\n"),
 				},
 			},
-			explorer = { enabled = true },
+			explorer = {
+				enabled = true,
+			},
 			indent = { enabled = true },
 			input = { enabled = true },
 			picker = {
@@ -146,10 +148,17 @@ require("lazy").setup({
 					end,
 				},
 				sources = {
+					explorer = {
+						hidden = true,
+						ignored = true,
+					},
 					files = {
 						hidden = true,
 						ignored = true,
-						exclude = { ".git" },
+						exclude = {
+							".git",
+							"target",
+						},
 					},
 				},
 			},
