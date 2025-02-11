@@ -135,14 +135,22 @@ require("lazy").setup({
 					}, "\n"),
 				},
 			},
-			explorer = {
-				enabled = true,
-				replace_netrw = true,
-			},
+			explorer = { enabled = true },
 			indent = { enabled = true },
 			input = { enabled = true },
-			picker = { enabled = true },
-			notifier = { enabled = true, top_down = true },
+			picker = {
+				enabled = true,
+				layout = {
+					preset = function()
+						return vim.o.columns >= 120 and "telescope" or "vertical"
+					end,
+				},
+			},
+			notifier = {
+				enabled = true,
+				top_down = false,
+				margin = { bottom = 1 },
+			},
 			quickfile = { enabled = true },
 			scope = { enabled = true },
 			statuscolumn = { enabled = true },
@@ -486,11 +494,6 @@ require("lazy").setup({
 						auto_insert = false,
 					},
 				},
-				accept = {
-					auto_brackets = {
-						enabled = true,
-					},
-				},
 			},
 			appearance = {
 				nerd_font_variant = "mono",
@@ -573,7 +576,7 @@ require("lazy").setup({
 						mode = mode or "n"
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
-					map("<leader>cr", vim.lsp.buf.rename, "[R]ename")
+					map("<leader>cr", vim.lsp.buf.rename, "[R]ename Symbol")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code [A]ction", { "n", "x" })
 					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
@@ -609,9 +612,6 @@ require("lazy").setup({
 				end,
 			})
 
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities())
-
 			local servers = {
 				-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
 				jsonls = {},
@@ -645,7 +645,12 @@ require("lazy").setup({
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
-						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+						server.capabilities = vim.tbl_deep_extend(
+							"force",
+							{},
+							require("blink.cmp").get_lsp_capabilities(),
+							server.capabilities or {}
+						)
 						require("lspconfig")[server_name].setup(server)
 					end,
 				},
