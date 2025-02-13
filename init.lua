@@ -98,24 +98,13 @@ require("lazy").setup({
 			},
 			-- Document existing key chains
 			spec = {
-				{ "<leader>c", group = "[C]ode", mode = { "n", "x" } },
-				{ "<leader>d", group = "[D]ocument" },
+				{ "<leader>c", group = "[C]ode / LSP", mode = { "n", "x" } },
 				{ "<leader>s", group = "[S]earch" },
-				{ "<leader>w", group = "[W]orkspace" },
 				{ "<leader>t", group = "[T]oggle" },
 				{ "<leader>g", group = "[G]it" },
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
 			},
 			preset = "helix",
-		},
-		keys = {
-			{
-				"<leader>?",
-				function()
-					require("which-key").show({ global = true })
-				end,
-				desc = "Global Keymaps",
-			},
 		},
 	},
 	{ -- telescope, fzf and more
@@ -174,18 +163,77 @@ require("lazy").setup({
 		},
 		keys = {
 			{
+				"\\",
+				function()
+					Snacks.explorer()
+				end,
+				desc = "File Explorer",
+			},
+			{
+				"<leader>t",
+				function()
+					Snacks.terminal()
+				end,
+				desc = "[T]erminal",
+			},
+			-- LSP
+			{
+				"<leader>cd",
+				function()
+					Snacks.picker.lsp_definitions()
+				end,
+				desc = "Definition",
+			},
+			{
+				"<leader>cD",
+				function()
+					Snacks.picker.lsp_declarations()
+				end,
+				desc = "Declaration",
+			},
+			{
+				"<leader>cr",
+				function()
+					Snacks.picker.lsp_references()
+				end,
+				nowait = true,
+				desc = "References",
+			},
+			{
+				"<leader>cI",
+				function()
+					Snacks.picker.lsp_implementations()
+				end,
+				desc = "Implementation",
+			},
+			{
+				"<leader>ct",
+				function()
+					Snacks.picker.lsp_type_definitions()
+				end,
+				desc = "Type Definition",
+			},
+			{
+				"<leader>cs",
+				function()
+					Snacks.picker.lsp_symbols()
+				end,
+				desc = "Buffer Symbols",
+			},
+			{
+				"<leader>cS",
+				function()
+					Snacks.picker.lsp_workspace_symbols()
+				end,
+				desc = "Workspace Symbols",
+			},
+			-- Search Stuff
+			{
 				"<leader><space>",
 				function()
 					Snacks.picker.buffers()
 				end,
 				desc = "Buffers",
-			},
-			{
-				"<leader>d",
-				function()
-					Snacks.dashboard.open()
-				end,
-				desc = "Dashboard",
 			},
 			{
 				"<leader>ss",
@@ -200,20 +248,6 @@ require("lazy").setup({
 					Snacks.picker.notifications()
 				end,
 				desc = "Notification History",
-			},
-			{
-				"\\",
-				function()
-					Snacks.explorer()
-				end,
-				desc = "File Explorer",
-			},
-			{
-				"<leader>sb",
-				function()
-					Snacks.picker.buffers()
-				end,
-				desc = "Buffers",
 			},
 			{
 				"<leader>sc",
@@ -249,55 +283,6 @@ require("lazy").setup({
 					Snacks.picker.recent()
 				end,
 				desc = "Recent",
-			},
-			{
-				"<leader>gb",
-				function()
-					Snacks.picker.git_branches()
-				end,
-				desc = "Git Branches",
-			},
-			{
-				"<leader>gl",
-				function()
-					Snacks.picker.git_log()
-				end,
-				desc = "Git Log",
-			},
-			{
-				"<leader>gL",
-				function()
-					Snacks.picker.git_log_line()
-				end,
-				desc = "Git Log Line",
-			},
-			{
-				"<leader>gs",
-				function()
-					Snacks.picker.git_status()
-				end,
-				desc = "Git Status",
-			},
-			{
-				"<leader>gS",
-				function()
-					Snacks.picker.git_stash()
-				end,
-				desc = "Git Stash",
-			},
-			{
-				"<leader>gd",
-				function()
-					Snacks.picker.git_diff()
-				end,
-				desc = "Git Diff (Hunks)",
-			},
-			{
-				"<leader>gf",
-				function()
-					Snacks.picker.git_log_file()
-				end,
-				desc = "Git Log File",
 			},
 			{
 				"<leader>sb",
@@ -469,11 +454,53 @@ require("lazy").setup({
 				desc = "Undo History",
 			},
 			{
-				"<leader>t",
+				"<leader>gb",
 				function()
-					Snacks.terminal()
+					Snacks.picker.git_branches()
 				end,
-				desc = "[T]erminal",
+				desc = "Git Branches",
+			},
+			{
+				"<leader>gl",
+				function()
+					Snacks.picker.git_log()
+				end,
+				desc = "Git Log",
+			},
+			{
+				"<leader>gL",
+				function()
+					Snacks.picker.git_log_line()
+				end,
+				desc = "Git Log Line",
+			},
+			{
+				"<leader>gs",
+				function()
+					Snacks.picker.git_status()
+				end,
+				desc = "Git Status",
+			},
+			{
+				"<leader>gS",
+				function()
+					Snacks.picker.git_stash()
+				end,
+				desc = "Git Stash",
+			},
+			{
+				"<leader>gd",
+				function()
+					Snacks.picker.git_diff()
+				end,
+				desc = "Git Diff (Hunks)",
+			},
+			{
+				"<leader>gf",
+				function()
+					Snacks.picker.git_log_file()
+				end,
+				desc = "Git Log File",
 			},
 		},
 	},
@@ -592,11 +619,10 @@ require("lazy").setup({
 				callback = function(event)
 					local map = function(keys, func, desc, mode)
 						mode = mode or "n"
-						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
 					end
-					map("<leader>cr", vim.lsp.buf.rename, "[R]ename Symbol")
-					map("<leader>ca", vim.lsp.buf.code_action, "Code [A]ction", { "n", "x" })
-					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+					map("<leader>cr", vim.lsp.buf.rename, "Rename Symbol")
+					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
