@@ -181,6 +181,13 @@ require("lazy").setup({
 				desc = "Buffers",
 			},
 			{
+				"<leader>d",
+				function()
+					Snacks.dashboard.open()
+				end,
+				desc = "Dashboard",
+			},
+			{
 				"<leader>ss",
 				function()
 					Snacks.picker.smart()
