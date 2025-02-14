@@ -100,7 +100,6 @@ require("lazy").setup({
 			spec = {
 				{ "<leader>c", group = "[C]ode / LSP", mode = { "n", "x" } },
 				{ "<leader>s", group = "[S]earch" },
-				{ "<leader>t", group = "[T]oggle" },
 				{ "<leader>g", group = "[G]it" },
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
 			},
@@ -211,6 +210,20 @@ require("lazy").setup({
 					Snacks.picker.lsp_type_definitions()
 				end,
 				desc = "Type Definition",
+			},
+			{
+				"<leader>cd",
+				function()
+					Snacks.picker.diagnostics()
+				end,
+				desc = "Diagnostics",
+			},
+			{
+				"<leader>cD",
+				function()
+					Snacks.picker.diagnostics_buffer()
+				end,
+				desc = "Buffer Diagnostics",
 			},
 			{
 				"<leader>cs",
@@ -355,20 +368,6 @@ require("lazy").setup({
 				desc = "Commands",
 			},
 			{
-				"<leader>sd",
-				function()
-					Snacks.picker.diagnostics()
-				end,
-				desc = "Diagnostics",
-			},
-			{
-				"<leader>sD",
-				function()
-					Snacks.picker.diagnostics_buffer()
-				end,
-				desc = "Buffer Diagnostics",
-			},
-			{
 				"<leader>sh",
 				function()
 					Snacks.picker.help()
@@ -452,6 +451,14 @@ require("lazy").setup({
 				end,
 				desc = "Undo History",
 			},
+			{
+				"<leader>sL",
+				function()
+					Snacks.picker.lsp_config()
+				end,
+				desc = "Undo History",
+			},
+			-- Git
 			{
 				"<leader>gb",
 				function()
@@ -648,9 +655,9 @@ require("lazy").setup({
 						})
 					end
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-						map("<leader>th", function()
+						map("<leader>ch", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-						end, "[T]oggle Inlay [H]ints")
+						end, "Toggle Inlay [H]ints")
 					end
 				end,
 			})
@@ -894,8 +901,7 @@ require("lazy").setup({
 				map("n", "<leader>hD", function()
 					gitsigns.diffthis("@")
 				end, { desc = "git [D]iff against last commit" })
-				-- Toggles
-				map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "[T]oggle git show [b]lame line" })
+				map("n", "<leader>hB", gitsigns.toggle_current_line_blame, { desc = "Toggle git show [b]lame line" })
 			end,
 		},
 	},
