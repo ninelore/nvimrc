@@ -143,10 +143,9 @@ require("lazy").setup({
 					},
 					files = {
 						hidden = true,
-						ignored = true,
+						ignored = false,
 						exclude = {
 							".git",
-							"target",
 						},
 					},
 				},
@@ -250,7 +249,7 @@ require("lazy").setup({
 				desc = "Notification History",
 			},
 			{
-				"<leader>sc",
+				"<leader>sv",
 				function()
 					Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
 				end,
