@@ -132,7 +132,7 @@ require("lazy").setup({
 				enabled = true,
 				layout = {
 					preset = function()
-						return vim.o.columns >= 120 and "telescope" or "vertical"
+						return vim.o.columns >= 120 and "default" or "vertical"
 					end,
 				},
 				sources = {
@@ -579,6 +579,7 @@ require("lazy").setup({
 			{ "williamboman/mason.nvim", config = true },
 			{ "williamboman/mason-lspconfig.nvim" },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
+			{ "nvim-java/nvim-java" },
 		},
 		config = function()
 			-- LSP Notifications
@@ -664,6 +665,8 @@ require("lazy").setup({
 
 			local servers = {
 				-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
+				bashls = {},
+				clangd = {},
 				jsonls = {},
 				lemminx = {},
 				lua_ls = {
@@ -677,9 +680,20 @@ require("lazy").setup({
 						},
 					},
 				},
+				neocmake = {},
+				rust_analyzer = {},
+				ts_ls = {},
 				yamlls = {},
 			}
-
+			require("java").setup({
+				spring_boot_tools = {
+					enable = false,
+				},
+				jdk = {
+					-- install jdk using mason.nvim
+					auto_install = false,
+				},
+			})
 			require("mason").setup({
 				-- Use system binaries first if available.
 				-- Fixes Stuff on NixOS
@@ -688,6 +702,7 @@ require("lazy").setup({
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua",
+				"shellcheck",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -773,14 +788,6 @@ require("lazy").setup({
 		end,
 	},
 	-- THEME
-	--[[{
-		"loctvl842/monokai-pro.nvim",
-		priority = 1000,
-		init = function()
-			vim.cmd.colorscheme("monokai-pro")
-			vim.cmd.hi("Comment gui=none")
-		end,
-	}, -- ]]
 	{
 		"polirritmico/monokai-nightasty.nvim",
 		lazy = false,
@@ -982,9 +989,7 @@ require("lazy").setup({
 				PATH = "append",
 				automatic_installation = true,
 				handlers = {},
-				ensure_installed = {
-					-- TODO:
-				},
+				ensure_installed = {},
 			})
 			-- Dap UI setup
 			-- For more information, see |:help nvim-dap-ui|
