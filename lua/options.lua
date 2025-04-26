@@ -16,7 +16,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 1500
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.list = true
@@ -24,7 +24,7 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
-vim.keymap.set({ "n", "x" }, "s", "<Nop>")
+vim.keymap.set({ "n", "v" }, "s", "<Nop>")
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
