@@ -5,6 +5,7 @@ return {
 			-- Server definitions
 			-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
 			local servers = {
+				angularls = {},
 				bashls = {},
 				ccls = {
 					init_options = {
@@ -13,6 +14,10 @@ return {
 						},
 					},
 				},
+				clangd = {},
+				cssls = {},
+				html = {},
+				jdtls = {},
 				jsonls = {},
 				lua_ls = {
 					settings = {
@@ -24,11 +29,13 @@ return {
 						},
 					},
 				},
+				markdown_oxide = {},
+				marksman = {},
 				neocmake = {},
 				nil_ls = {},
 				nixd = {},
 				nushell = {},
-				rust_analyzer = {},
+				sqls = {},
 				ts_ls = {},
 				yamlls = {},
 			}
@@ -86,7 +93,7 @@ return {
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
-						vim.pi.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = event.buf,
 							group = highlight_augroup,
 							callback = vim.lsp.buf.document_highlight,
@@ -117,6 +124,7 @@ return {
 				local client = vim.lsp.config[k]
 				if vim.fn.executable(client.cmd[1]) == 1 then
 					vim.lsp.config(k, v)
+					vim.lsp.enable(k)
 				end
 			end
 		end,
