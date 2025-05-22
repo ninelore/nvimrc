@@ -1,14 +1,38 @@
 return {
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = {
-			{ "williamboman/mason.nvim", config = true },
-			{ "williamboman/mason-lspconfig.nvim" },
-			{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
-			{ "nvim-java/nvim-java" },
-			{ "ranjithshegde/ccls.nvim" },
-		},
 		config = function()
+			-- Server definitions
+			-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
+			local servers = {
+				bashls = {},
+				ccls = {
+					init_options = {
+						cache = {
+							directory = vim.fs.normalize("~/.cache/ccls/"),
+						},
+					},
+				},
+				jsonls = {},
+				lua_ls = {
+					settings = {
+						Lua = {
+							completion = {
+								callSnippet = "Replace",
+							},
+							diagnostics = { disable = { "missing-fields" } },
+						},
+					},
+				},
+				neocmake = {},
+				nil_ls = {},
+				nixd = {},
+				nushell = {},
+				rust_analyzer = {},
+				ts_ls = {},
+				yamlls = {},
+			}
+
 			-- LSP Notifications
 			local progress = vim.defaulttable()
 			vim.api.nvim_create_autocmd("LspProgress", {
@@ -62,18 +86,16 @@ return {
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
-						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+						vim.pi.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = event.buf,
 							group = highlight_augroup,
 							callback = vim.lsp.buf.document_highlight,
 						})
-
 						vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 							buffer = event.buf,
 							group = highlight_augroup,
 							callback = vim.lsp.buf.clear_references,
 						})
-
 						vim.api.nvim_create_autocmd("LspDetach", {
 							group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
 							callback = function(event2)
@@ -90,109 +112,17 @@ return {
 				end,
 			})
 
-			local servers = {
-				-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
-				bashls = {},
-				jsonls = {},
-				lemminx = {},
-				lua_ls = {
-					settings = {
-						Lua = {
-							completion = {
-								callSnippet = "Replace",
-							},
-							-- Ignore Lua_LS's noisy `missing-fields` warnings
-							diagnostics = { disable = { "missing-fields" } },
-						},
-					},
-				},
-				neocmake = {},
-				rust_analyzer = {},
-				ts_ls = {},
-				yamlls = {},
-			}
-			require("ccls").setup({
-				lsp = {
-					server = {
-						init_options = { cache = {
-							directory = vim.fs.normalize("~/.cache/ccls/"),
-						} },
-						name = "ccls",
-						cmd = { "ccls" },
-						offset_encoding = "utf-32",
-						root_dir = vim.fs.dirname(
-							vim.fs.find({ "compile_commands.json", "compile_flags.txt", ".git" }, { upward = true })[1]
-						),
-					},
-					codelens = { enable = true },
-				},
-			})
-			require("java").setup({
-				spring_boot_tools = {
-					enable = false,
-				},
-				jdk = {
-					-- install jdk using mason.nvim
-					auto_install = false,
-				},
-				java_test = {
-					enable = false,
-				},
-			})
-			require("mason").setup({
-				-- Use system binaries first if available.
-				-- Fixes Stuff on NixOS
-				PATH = "append",
-			})
-			local ensure_installed = vim.tbl_keys(servers or {})
-			vim.list_extend(ensure_installed, {
-				"stylua",
-				"shellcheck",
-			})
-			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
-			require("mason-lspconfig").setup({
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						server.capabilities = vim.tbl_deep_extend(
-							"force",
-							{},
-							require("blink.cmp").get_lsp_capabilities(),
-							server.capabilities or {}
-						)
-						require("lspconfig")[server_name].setup(server)
-					end,
-				},
-			})
-
-			-- Handle seperately if available
-			if vim.fn.executable("nixd") == 1 then
-				require("lspconfig").nixd.setup({})
-			end
-			if vim.fn.executable("nil") == 1 then
-				require("lspconfig").nil_ls.setup({
-					settings = {
-						["nil"] = {
-							testSetting = 42,
-							formatting = {
-								command = { "nixfmt" },
-							},
-						},
-					},
-				})
-			end
-			if vim.fn.executable("nu") == 1 then
-				require("lspconfig").nushell.setup({})
+			-- Start available servers
+			for k, v in pairs(servers) do
+				local client = vim.lsp.config[k]
+				if vim.fn.executable(client.cmd[1]) == 1 then
+					vim.lsp.config(k, v)
+				end
 			end
 		end,
 	},
-	{ -- Autoformat
+	{ -- Formatting
 		"stevearc/conform.nvim",
-		dependencies = {
-			"williamboman/mason.nvim",
-			"zapling/mason-conform.nvim",
-		},
 		event = { "BufWritePre" },
 		cmd = { "ConformInfo" },
 		keys = {
@@ -206,8 +136,6 @@ return {
 			},
 		},
 		config = function()
-			require("mason").setup()
-
 			require("conform").setup({
 				notify_on_error = false,
 				format_on_save = function(bufnr)
@@ -249,8 +177,92 @@ return {
 			end, {
 				desc = "Re-enable autoformat-on-save",
 			})
-
-			require("mason-conform").setup()
+		end,
+	},
+	{ -- Debugging
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			-- Debugger UI + dependencies
+			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio",
+		},
+		keys = {
+			-- Basic debugging keymaps
+			{
+				"<F5>",
+				function()
+					require("dap").continue()
+				end,
+				desc = "Debug: Start/Continue",
+			},
+			{
+				"<F1>",
+				function()
+					require("dap").step_into()
+				end,
+				desc = "Debug: Step Into",
+			},
+			{
+				"<F2>",
+				function()
+					require("dap").step_over()
+				end,
+				desc = "Debug: Step Over",
+			},
+			{
+				"<F3>",
+				function()
+					require("dap").step_out()
+				end,
+				desc = "Debug: Step Out",
+			},
+			{
+				"<leader>b",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "Debug: Toggle Breakpoint",
+			},
+			{
+				"<leader>B",
+				function()
+					require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+				end,
+				desc = "Debug: Set Breakpoint",
+			},
+			-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+			{
+				"<F7>",
+				function()
+					require("dapui").toggle()
+				end,
+				desc = "Debug: See last session result.",
+			},
+		},
+		config = function()
+			local dap = require("dap")
+			local dapui = require("dapui")
+			-- Dap UI setup
+			-- For more information, see |:help nvim-dap-ui|
+			dapui.setup({
+				icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+				controls = {
+					icons = {
+						pause = "⏸",
+						play = "▶",
+						step_into = "⏎",
+						step_over = "⏭",
+						step_out = "⏮",
+						step_back = "b",
+						run_last = "▶▶",
+						terminate = "⏹",
+						disconnect = "⏏",
+					},
+				},
+			})
+			dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+			dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+			dap.listeners.before.event_exited["dapui_config"] = dapui.close
 		end,
 	},
 }

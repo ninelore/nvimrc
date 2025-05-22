@@ -16,7 +16,6 @@ require("lazy").setup({
 	require("plugins.cmp"),
 	require("plugins.lsp"),
 	require("plugins.gitsigns"),
-	require("plugins.dap"),
 	require("plugins.other"),
 }, {
 	ui = {

@@ -5,9 +5,6 @@ return {
 			-- Debugger UI + dependencies
 			"rcarriga/nvim-dap-ui",
 			"nvim-neotest/nvim-nio",
-			-- Mason
-			"williamboman/mason.nvim",
-			"jay-babu/mason-nvim-dap.nvim",
 		},
 		keys = {
 			-- Basic debugging keymaps
@@ -65,14 +62,6 @@ return {
 		config = function()
 			local dap = require("dap")
 			local dapui = require("dapui")
-			require("mason-nvim-dap").setup({
-				-- Use system binaries first if available.
-				-- Fixes Stuff on NixOS
-				PATH = "append",
-				automatic_installation = true,
-				handlers = {},
-				ensure_installed = {},
-			})
 			-- Dap UI setup
 			-- For more information, see |:help nvim-dap-ui|
 			dapui.setup({
