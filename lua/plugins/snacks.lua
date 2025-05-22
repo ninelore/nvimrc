@@ -73,14 +73,14 @@ return {
 				function()
 					Snacks.picker.lsp_definitions()
 				end,
-				desc = "Definition",
+				desc = "Search Definitions",
 			},
 			{
 				"<leader>cD",
 				function()
 					Snacks.picker.lsp_declarations()
 				end,
-				desc = "Declaration",
+				desc = "Search Declarations",
 			},
 			{
 				"<leader>cr",
@@ -88,49 +88,49 @@ return {
 					Snacks.picker.lsp_references()
 				end,
 				nowait = true,
-				desc = "References",
+				desc = "Search References",
 			},
 			{
 				"<leader>cI",
 				function()
 					Snacks.picker.lsp_implementations()
 				end,
-				desc = "Implementation",
+				desc = "Search Implementations",
 			},
 			{
 				"<leader>ct",
 				function()
 					Snacks.picker.lsp_type_definitions()
 				end,
-				desc = "Type Definition",
+				desc = "Search Type Definition",
 			},
 			{
-				"<leader>cd",
+				"<leader>cE",
 				function()
 					Snacks.picker.diagnostics()
 				end,
-				desc = "Diagnostics",
+				desc = "Search Workspace Diagnostics",
 			},
 			{
-				"<leader>cD",
+				"<leader>ce",
 				function()
 					Snacks.picker.diagnostics_buffer()
 				end,
-				desc = "Buffer Diagnostics",
+				desc = "Search Buffer Diagnostics",
 			},
 			{
 				"<leader>cs",
 				function()
 					Snacks.picker.lsp_symbols()
 				end,
-				desc = "Buffer Symbols",
+				desc = "Search Buffer Symbols",
 			},
 			{
 				"<leader>cS",
 				function()
 					Snacks.picker.lsp_workspace_symbols()
 				end,
-				desc = "Workspace Symbols",
+				desc = "Search Workspace Symbols",
 			},
 			-- Search Stuff
 			{

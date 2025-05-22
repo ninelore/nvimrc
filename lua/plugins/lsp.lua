@@ -87,7 +87,7 @@ return {
 						mode = mode or "n"
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
 					end
-					map("<leader>cr", vim.lsp.buf.rename, "Rename Symbol")
+					map("<leader>cc", vim.lsp.buf.rename, "Rename Symbol")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
