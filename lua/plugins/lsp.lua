@@ -35,6 +35,7 @@ return {
 				nil_ls = {},
 				nixd = {},
 				nushell = {},
+				rust_analyzer = {},
 				sqls = {},
 				ts_ls = {},
 				yamlls = {},
