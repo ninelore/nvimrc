@@ -2,14 +2,15 @@ return {
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs", -- Sets main module to use for opts
-		-- See `:help nvim-treesitter`
+		branch = "main",
 		opts = {
 			ensure_installed = {
 				"bash",
 				"c",
 				"diff",
 				"html",
+				"gitcommit",
+				"gitignore",
 				"lua",
 				"luadoc",
 				"markdown",
