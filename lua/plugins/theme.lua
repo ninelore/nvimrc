@@ -4,7 +4,7 @@ return {
 		lazy = false,
 		priority = 1000,
 		opts = {
-			dark_style_background = "dark", -- default | dark | transparent | #RRGGBB
+			dark_style_background = "transparent", -- default | dark | transparent | #RRGGBB
 			markdown_header_marks = true,
 			terminal_colors = function(colors)
 				return { fg = colors.fg_dark }

@@ -32,7 +32,6 @@ return {
 				markdown_oxide = {},
 				marksman = {},
 				neocmake = {},
-				nil_ls = {},
 				nixd = {},
 				nushell = {},
 				rust_analyzer = {},
@@ -89,6 +88,7 @@ return {
 					end
 					map("<leader>cc", vim.lsp.buf.rename, "Rename Symbol")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
+            map("<leader>d", vim.diagnostic.open_float, "Show Diagnostics under the cursor")
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
