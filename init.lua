@@ -164,7 +164,6 @@ now(function()
 			{ "<leader>c", group = "[C]ode / LSP", mode = { "n", "x" } },
 			{ "<leader>s", group = "[S]earch" },
 			{ "<leader>g", group = "[G]it" },
-			{ "<leader>gs", group = "[S]earch (Picker)", mode = { "n", "v" } },
 		},
 		preset = "helix",
 	})
