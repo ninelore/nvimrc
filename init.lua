@@ -221,7 +221,6 @@ now(function()
 end)
 now(function()
 	add({ source = "Saghen/blink.cmp", checkout = "v1.6.0", depends = { "rafamadriz/friendly-snippets" } })
-	require("mini.snippets").setup()
 	require("blink.cmp").setup({
 		keymap = {
 			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -245,12 +244,12 @@ now(function()
 				enabled = true,
 			},
 			menu = {
-				auto_show = false,
+				auto_show = true,
 			},
 			list = {
 				selection = {
 					preselect = false,
-					auto_insert = true,
+					auto_insert = false,
 				},
 			},
 			documentation = {
@@ -259,9 +258,26 @@ now(function()
 			},
 		},
 		cmdline = {
-			keymap = { preset = "inherit" },
+			keymap = {
+				preset = "inherit",
+				["<CR>"] = { "accept_and_enter", "fallback" },
+				["<Space>"] = { "accept", "fallback" },
+			},
+			completion = {
+				menu = {
+					auto_show = true,
+				},
+				list = {
+					selection = {
+						preselect = false,
+						auto_insert = false,
+					},
+				},
+				ghost_text = {
+					enabled = true,
+				},
+			},
 		},
-		snippets = { preset = "mini_snippets" },
 	})
 end)
 now(function()
