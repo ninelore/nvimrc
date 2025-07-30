@@ -157,6 +157,57 @@ now(function()
 	})
 end)
 now(function()
+	add({
+		source = "nvim-neo-tree/neo-tree.nvim",
+		checkout = "v3.x",
+		depends = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+			"nvim-tree/nvim-web-devicons",
+		},
+	})
+	vim.keymap.set("", "\\", ":Neotree reveal right<CR>", { desc = "Show Explorer" })
+	vim.keymap.set("", "|", ":Neotree document_symbols right<CR>", { desc = "Show Explorer" })
+	require("neo-tree").setup({
+		sources = {
+			"filesystem",
+			"buffers",
+			"git_status",
+			"document_symbols",
+		},
+		source_selector = {
+			winbar = true,
+			statusline = true,
+			sources = {
+				{ source = "filesystem" },
+				{ source = "git_status" },
+				{ source = "document_symbols" },
+			},
+		},
+		filesystem = {
+			bind_to_cwd = true,
+			hijack_netrw_behavior = "open_current",
+			window = {
+				mappings = {
+					["\\"] = "close_window",
+					["<Space>"] = "noop",
+				},
+			},
+			filtered_items = {
+				visible = true,
+				hide_dotfiles = false,
+				hide_gitignored = true,
+				hide_by_name = {
+					".DS_Store",
+					".git",
+					"thumbs.db",
+					"node_modules",
+				},
+			},
+		},
+	})
+end)
+now(function()
 	add("folke/which-key.nvim")
 	require("which-key").setup({
 		delay = 0,
