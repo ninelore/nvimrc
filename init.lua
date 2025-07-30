@@ -32,6 +32,7 @@ now(function()
 	vim.o.background = "dark"
 	vim.o.ts = 2
 	vim.o.sw = 0
+	vim.o.shm = "ltToOCFI"
 	vim.o.breakindent = true
 	vim.o.undofile = true
 	vim.o.ignorecase = true
@@ -49,7 +50,6 @@ now(function()
 	vim.schedule(function()
 		vim.o.clipboard = "unnamedplus"
 	end)
-	vim.keymap.set({ "n", "v" }, "s", "<Nop>")
 	vim.keymap.set("n", "<leader>d", function()
 		vim.diagnostic.open_float()
 	end, { desc = "Show Diagnostics under the cursor" })
