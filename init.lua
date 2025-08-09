@@ -314,6 +314,7 @@ now(function()
 		neocmake = {},
 		nixd = {},
 		nushell = {},
+		ruff = {},
 		rust_analyzer = {},
 		sqls = {},
 		ts_ls = {},
