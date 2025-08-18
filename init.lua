@@ -375,6 +375,7 @@ later(function()
 			end,
 		},
 	})
+	add("nvim-treesitter/nvim-treesitter-context")
 	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "lua", "nu", "nix" })
 	vim.api.nvim_create_autocmd({ "BufRead", "FileType" }, {
 		callback = function(args)
@@ -406,6 +407,7 @@ later(function()
 			vim.bo.indentexpr = 'v:lua.require"nvim-treesitter".indentexpr()'
 		end,
 	})
+	require("treesitter-context").setup()
 end)
 later(function()
 	add("folke/todo-comments.nvim")
