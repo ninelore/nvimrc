@@ -407,7 +407,9 @@ later(function()
 			vim.bo.indentexpr = 'v:lua.require"nvim-treesitter".indentexpr()'
 		end,
 	})
-	require("treesitter-context").setup()
+	require("treesitter-context").setup({
+		max_lines = 5,
+	})
 end)
 later(function()
 	add("folke/todo-comments.nvim")
