@@ -363,9 +363,7 @@ now(function()
 		end
 	end
 end)
-
--- Lazy plugins
-later(function()
+now(function()
 	add({
 		source = "nvim-treesitter/nvim-treesitter",
 		checkout = "main",
@@ -411,6 +409,8 @@ later(function()
 		max_lines = 5,
 	})
 end)
+
+-- Lazy plugins
 later(function()
 	add("folke/todo-comments.nvim")
 	require("todo-comments").setup()
@@ -503,6 +503,8 @@ later(function()
 		formatters_by_ft = {
 			lua = { "stylua" },
 			nix = { "nixfmt" },
+			c = { "clang-format" },
+			cpp = { "clang-format" },
 		},
 	})
 	vim.api.nvim_create_user_command("FormatDisable", function(args)
