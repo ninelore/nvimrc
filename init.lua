@@ -485,19 +485,12 @@ later(function()
 	require("conform").setup({
 		notify_on_error = false,
 		format_on_save = function(bufnr)
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+			if not (vim.g.autoformat or vim.b[bufnr].autoformat) then
 				return
-			end
-			local disable_filetypes = { c = true, cpp = true }
-			local lsp_format_opt
-			if disable_filetypes[vim.bo[bufnr].filetype] then
-				lsp_format_opt = "never"
-			else
-				lsp_format_opt = "fallback"
 			end
 			return {
 				timeout_ms = 500,
-				lsp_format = lsp_format_opt,
+				lsp_format = "fallback",
 			}
 		end,
 		formatters_by_ft = {
@@ -507,21 +500,21 @@ later(function()
 			cpp = { "clang-format" },
 		},
 	})
-	vim.api.nvim_create_user_command("FormatDisable", function(args)
+	vim.api.nvim_create_user_command("FormatEnable", function(args)
 		if args.bang then
-			vim.b.disable_autoformat = true
+			vim.b.autoformat = true
 		else
-			vim.g.disable_autoformat = true
+			vim.g.autoformat = true
 		end
 	end, {
-		desc = "Disable autoformat-on-save",
+		desc = "Enable autoformat-on-save",
 		bang = true,
 	})
-	vim.api.nvim_create_user_command("FormatEnable", function()
-		vim.b.disable_autoformat = false
-		vim.g.disable_autoformat = false
+	vim.api.nvim_create_user_command("FormatDisable", function()
+		vim.b.autoformat = false
+		vim.g.autoformat = false
 	end, {
-		desc = "Enable autoformat-on-save",
+		desc = "Disable autoformat-on-save",
 	})
 	vim.keymap.set("n", "<leader>f", function()
 		require("conform").format({ async = true, lsp_format = "fallback" })
