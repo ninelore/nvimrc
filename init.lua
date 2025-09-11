@@ -65,6 +65,17 @@ now(function()
 			vim.highlight.on_yank()
 		end,
 	})
+	-- Language specific settings
+	vim.api.nvim_create_autocmd("BufEnter", {
+		desc = "Language specific buffer settings",
+		pattern = "*.nix",
+		callback = function(ev)
+			vim.b[ev.buf].autoformat = true
+			vim.bo[ev.buf].ts = 2
+			vim.bo[ev.buf].sts = 2
+			vim.bo[ev.buf].expandtab = true
+		end,
+	})
 end)
 
 -- mini.nvim modules
