@@ -385,7 +385,7 @@ now(function()
 		},
 	})
 	add("nvim-treesitter/nvim-treesitter-context")
-	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "lua", "nu", "nix" })
+	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "lua" })
 	vim.api.nvim_create_autocmd({ "BufRead", "FileType" }, {
 		callback = function(args)
 			local bufnr = args.buf
