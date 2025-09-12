@@ -66,7 +66,7 @@ now(function()
 		end,
 	})
 	-- Language specific settings
-	vim.api.nvim_create_autocmd("BufEnter", {
+	vim.api.nvim_create_autocmd({ "BufEnter", "BufRead" }, {
 		desc = "Language specific buffer settings",
 		pattern = "*.nix",
 		callback = function(ev)
