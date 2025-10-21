@@ -296,7 +296,6 @@ now(function()
 	-- Server definitions
 	-- See `:help lspconfig-all` or https://github.com/neovim/nvim-lspconfig
 	local servers = {
-		angularls = {},
 		bashls = {},
 		ccls = {
 			init_options = {
@@ -308,7 +307,6 @@ now(function()
 		clangd = {},
 		cssls = {},
 		html = {},
-		jdtls = {},
 		jsonls = {},
 		lua_ls = {
 			settings = {
@@ -322,7 +320,6 @@ now(function()
 		},
 		markdown_oxide = {},
 		marksman = {},
-		neocmake = {},
 		nixd = {},
 		nushell = {},
 		ruff = {},
