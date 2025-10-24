@@ -382,7 +382,7 @@ now(function()
 		},
 	})
 	add("nvim-treesitter/nvim-treesitter-context")
-	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "lua" })
+	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "json", "jsonc", "lua" })
 	vim.api.nvim_create_autocmd({ "BufRead", "FileType" }, {
 		callback = function(args)
 			local bufnr = args.buf
@@ -531,4 +531,7 @@ later(function()
 		require("conform").format({ async = true, lsp_format = "fallback" })
 	end, { desc = "Format buffer" })
 end)
-
+later(function()
+	add("esensar/nvim-dev-container")
+	require("devcontainer").setup{}
+end)
