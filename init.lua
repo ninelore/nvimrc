@@ -533,5 +533,13 @@ later(function()
 end)
 later(function()
 	add("esensar/nvim-dev-container")
-	require("devcontainer").setup{}
+	require("devcontainer").setup({
+		attach_mounts = {
+			nvim_install_as_root = true,
+			neovim_config = {
+				enabled = true,
+				options = { "readonly" },
+			},
+		},
+	})
 end)
