@@ -389,7 +389,7 @@ now(function()
 		},
 	})
 	add("nvim-treesitter/nvim-treesitter-context")
-	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "json", "jsonc", "lua" })
+	require("nvim-treesitter").install({ "bash", "diff", "gitcommit", "gitignore", "json", "jsonc", "lua", "markdown", "markdown_inline" })
 	vim.api.nvim_create_autocmd({ "BufRead", "FileType" }, {
 		callback = function(args)
 			local bufnr = args.buf
@@ -549,4 +549,7 @@ later(function()
 			},
 		},
 	})
+end)
+later(function ()
+	add("MeanderingProgrammer/render-markdown.nvim")
 end)
