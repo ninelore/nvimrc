@@ -174,7 +174,6 @@ now(function()
 		depends = {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
-			"nvim-tree/nvim-web-devicons",
 		},
 	})
 	vim.keymap.set("", "\\", ":Neotree reveal right<CR>", { desc = "Show Explorer" })
@@ -231,7 +230,7 @@ now(function()
 	})
 end)
 now(function()
-	add({ source = "Saghen/blink.cmp", checkout = "v1.6.0", depends = { "rafamadriz/friendly-snippets" } })
+	add({ source = "Saghen/blink.cmp", checkout = "v1.7.0", depends = { "rafamadriz/friendly-snippets" } })
 	require("blink.cmp").setup({
 		keymap = {
 			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
