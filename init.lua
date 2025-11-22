@@ -305,6 +305,7 @@ now(function()
 		},
 		clangd = {},
 		cssls = {},
+		gopls = {},
 		html = {},
 		jsonls = {},
 		lua_ls = {
